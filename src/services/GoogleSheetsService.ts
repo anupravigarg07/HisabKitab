@@ -179,18 +179,18 @@ class GoogleSheetsService {
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
       // Generate unique ID for this transaction
-      const transactionId = this.generateTransactionId();
+      const transactionId = `PUR-${Date.now()}`;
 
       const values = [
         [
-          transactionId, // Auto-generated ID
-          new Date().toISOString(), // Date
-          transactionData.name, // Product Name
+          transactionId,
+          new Date().toISOString(),
+          transactionData.name,
           transactionData.amount, // Purchasing Price
-          transactionData.quantity, // Quantity
-          transactionData.unit, // Unit
-          transactionData.notes || '', // Notes (optional)
-          'Active', // Status
+          transactionData.quantity,
+          transactionData.unit,
+          transactionData.notes || '',
+          'Active',
         ],
       ];
 
@@ -223,7 +223,7 @@ class GoogleSheetsService {
 
   async getPurchaseTransactions(
     userEmail: string,
-    includeHistory: boolean = false, // default = only Active
+    includeHistory: boolean = false,
   ): Promise<PurchaseTransaction[]> {
     try {
       const accessToken = await GoogleSignInService.getAccessToken();
@@ -249,7 +249,6 @@ class GoogleSheetsService {
       const result = await response.json();
       const values = result.values || [];
 
-      // Format: [id, date, name, amount, quantity, unit, notes, status]
       let transactions: PurchaseTransaction[] = values.slice(1).map(
         (row: string[]): PurchaseTransaction => ({
           id: row[0] || '',
@@ -263,7 +262,7 @@ class GoogleSheetsService {
         }),
       );
 
-      // ✅ Filter out archived unless explicitly requested
+      //  Filter out archived unless explicitly requested
       if (!includeHistory) {
         transactions = transactions.filter(t => t.status === 'Active');
       }
@@ -275,7 +274,6 @@ class GoogleSheetsService {
     }
   }
 
-  // Sales Methods (unchanged)
   async saveSalesTransaction(
     userEmail: string,
     transactionData: SalesTransactionFormData,
@@ -284,19 +282,18 @@ class GoogleSheetsService {
       const accessToken = await GoogleSignInService.getAccessToken();
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      // Generate a unique ID (timestamp-based for simplicity)
       const transactionId = `SALE-${Date.now()}`;
 
       const values = [
         [
-          transactionId, // ID
-          new Date().toISOString(), // Date
-          transactionData.productName, // Product Name
-          transactionData.sellingPrice, // Selling Price
-          transactionData.quantity, // Quantity
-          transactionData.unit, // Unit
-          transactionData.notes || '', // Notes
-          'Active', // Status (default active)
+          transactionId,
+          new Date().toISOString(),
+          transactionData.productName,
+          transactionData.sellingPrice,
+          transactionData.quantity,
+          transactionData.unit,
+          transactionData.notes || '',
+          'Active',
         ],
       ];
 
@@ -329,7 +326,7 @@ class GoogleSheetsService {
 
   async getSalesTransactions(
     userEmail: string,
-    includeHistory: boolean = false, // default = only Active
+    includeHistory: boolean = false,
   ): Promise<SalesTransaction[]> {
     try {
       const accessToken = await GoogleSignInService.getAccessToken();
@@ -381,7 +378,6 @@ class GoogleSheetsService {
     }
   }
 
-  // --- Update a Sales Transaction by ID ---
   async updateSalesTransactionById(
     userEmail: string,
     id: string,
@@ -411,10 +407,9 @@ class GoogleSheetsService {
         throw new Error(`Sales transaction with ID ${id} not found`);
       }
 
-      // --- Step 1: Mark old row as Archived ---
       const oldRow = rows[rowIndex];
       const archivedRow = [...oldRow];
-      archivedRow[7] = 'Archived'; // set status = Archived
+      archivedRow[7] = 'Archived';
 
       await fetch(
         `${
@@ -432,7 +427,6 @@ class GoogleSheetsService {
         },
       );
 
-      // --- Step 2: Append new Active row with updated values ---
       const newRow = [
         id, // keep same ID for traceability
         transactionData.date || oldRow[1],
@@ -461,7 +455,6 @@ class GoogleSheetsService {
     }
   }
 
-  // --- Delete (archive) a Sales Transaction ---
   async deleteSalesTransactionById(
     userEmail: string,
     transactionId: string,
@@ -470,10 +463,8 @@ class GoogleSheetsService {
       const accessToken = await GoogleSignInService.getAccessToken();
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      // Get all transactions including history
       const transactions = await this.getSalesTransactions(userEmail, true);
 
-      // Find the ACTIVE row with this transactionId
       const activeTransactionIndex = transactions.findIndex(
         t => t.id === transactionId && t.status === 'Active',
       );
@@ -511,7 +502,6 @@ class GoogleSheetsService {
     }
   }
 
-  // Inventory Methods (unchanged)
   async saveInventoryTransaction(
     userEmail: string,
     sheetName: string,
@@ -525,8 +515,8 @@ class GoogleSheetsService {
         [
           new Date().toISOString(),
           inventoryData.name, // Product Name
-          inventoryData.sellingPrice, // Selling Price
-          inventoryData.quantity, // Quantity
+          inventoryData.sellingPrice,
+          inventoryData.quantity,
         ],
       ];
 
@@ -601,74 +591,74 @@ class GoogleSheetsService {
   }
 
   // Legacy Methods (updated for backward compatibility)
-  async saveTransaction(
-    userEmail: string,
-    transactionData: TransactionFormData,
-  ): Promise<GoogleSheetsResponse> {
-    // Redirect to new purchase method
-    return this.savePurchaseTransaction(userEmail, transactionData);
-  }
+  // async saveTransaction(
+  //   userEmail: string,
+  //   transactionData: TransactionFormData,
+  // ): Promise<GoogleSheetsResponse> {
+  //   // Redirect to new purchase method
+  //   return this.savePurchaseTransaction(userEmail, transactionData);
+  // }
 
-  async getTransactions(
-    userEmail: string,
-    sheetName: string = 'purchase details',
-  ): Promise<SavedTransaction[]> {
-    try {
-      const accessToken = await GoogleSignInService.getAccessToken();
-      const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
+  // async getTransactions(
+  //   userEmail: string,
+  //   sheetName: string = 'purchase details',
+  // ): Promise<SavedTransaction[]> {
+  //   try {
+  //     const accessToken = await GoogleSignInService.getAccessToken();
+  //     const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      const encodedSheetName = encodeURIComponent(sheetName);
-      const response = await fetch(
-        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+  //     const encodedSheetName = encodeURIComponent(sheetName);
+  //     const response = await fetch(
+  //       `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       },
+  //     );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`,
-        );
-      }
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `HTTP error! status: ${response.status}, message: ${errorText}`,
+  //       );
+  //     }
 
-      const result = await response.json();
-      const values = result.values || [];
+  //     const result = await response.json();
+  //     const values = result.values || [];
 
-      // Handle both old format (without ID) and new format (with ID)
-      return values.slice(1).map((row: string[]): SavedTransaction => {
-        if (row.length >= 6) {
-          // New format: [id, date, name, number, amount, message]
-          return {
-            id: row[0] || '',
-            date: row[1] || '',
-            name: row[2] || '',
-            number: row[3] || '',
-            amount: row[4] || '',
-            message: row[5] || '',
-          };
-        } else {
-          // Old format: [date, name, number, amount, message]
-          return {
-            id: `LEGACY_${Date.now()}_${Math.random()
-              .toString(36)
-              .substring(2, 8)}`, // Generate ID for legacy data
-            date: row[0] || '',
-            name: row[1] || '',
-            number: row[2] || '',
-            amount: row[3] || '',
-            message: row[4] || '',
-          };
-        }
-      });
-    } catch (error) {
-      console.error('Error getting transactions:', error);
-      throw error;
-    }
-  }
-  // Method to update purchase transaction by ID
+  //     // Handle both old format (without ID) and new format (with ID)
+  //     return values.slice(1).map((row: string[]): SavedTransaction => {
+  //       if (row.length >= 6) {
+  //         // New format: [id, date, name, number, amount, message]
+  //         return {
+  //           id: row[0] || '',
+  //           date: row[1] || '',
+  //           name: row[2] || '',
+  //           number: row[3] || '',
+  //           amount: row[4] || '',
+  //           message: row[5] || '',
+  //         };
+  //       } else {
+  //         // Old format: [date, name, number, amount, message]
+  //         return {
+  //           id: `LEGACY_${Date.now()}_${Math.random()
+  //             .toString(36)
+  //             .substring(2, 8)}`, // Generate ID for legacy data
+  //           date: row[0] || '',
+  //           name: row[1] || '',
+  //           number: row[2] || '',
+  //           amount: row[3] || '',
+  //           message: row[4] || '',
+  //         };
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error('Error getting transactions:', error);
+  //     throw error;
+  //   }
+  // }
+
   async updatePurchaseTransactionById(
     userEmail: string,
     transactionId: string,
@@ -730,8 +720,6 @@ class GoogleSheetsService {
     );
   }
 
-  // Method to delete purchase transaction by ID
-  // Method to "delete" a purchase transaction by marking its status as Deleted
   async deletePurchaseTransactionById(
     userEmail: string,
     transactionId: string,
@@ -781,51 +769,50 @@ class GoogleSheetsService {
     }
   }
 
-  async deleteTransaction(
-    userEmail: string,
-    rowIndex: number,
-    sheetName: string = 'purchase details',
-  ): Promise<void> {
-    try {
-      const accessToken = await GoogleSignInService.getAccessToken();
-      const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
+  // async deleteTransaction(
+  //   userEmail: string,
+  //   rowIndex: number,
+  // ): Promise<void> {
+  //   try {
+  //     const accessToken = await GoogleSignInService.getAccessToken();
+  //     const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      const response = await fetch(
-        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}:batchUpdate`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            requests: [
-              {
-                deleteDimension: {
-                  range: {
-                    sheetId: 0,
-                    dimension: 'ROWS',
-                    startIndex: rowIndex,
-                    endIndex: rowIndex + 1,
-                  },
-                },
-              },
-            ],
-          }),
-        },
-      );
+  //     const response = await fetch(
+  //       `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}:batchUpdate`,
+  //       {
+  //         method: 'POST',
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           requests: [
+  //             {
+  //               deleteDimension: {
+  //                 range: {
+  //                   sheetId: 0,
+  //                   dimension: 'ROWS',
+  //                   startIndex: rowIndex,
+  //                   endIndex: rowIndex + 1,
+  //                 },
+  //               },
+  //             },
+  //           ],
+  //         }),
+  //       },
+  //     );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`,
-        );
-      }
-    } catch (error) {
-      console.error('Error deleting transaction:', error);
-      throw error;
-    }
-  }
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `HTTP error! status: ${response.status}, message: ${errorText}`,
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting transaction:', error);
+  //     throw error;
+  //   }
+  // }
 
   async clearSheet(
     userEmail: string,
