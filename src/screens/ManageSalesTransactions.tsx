@@ -41,7 +41,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
     productName: '',
     sellingPrice: '',
     quantity: '',
-    unit: 'Piece',
+    unit: 'Kg',
     notes: '',
   });
   const [editingTransaction, setEditingTransaction] =
@@ -115,7 +115,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
         productName: '',
         sellingPrice: '',
         quantity: '',
-        unit: 'Piece',
+        unit: 'Kg',
         notes: '',
       });
       setModalVisible(false);
@@ -140,7 +140,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
         productName: '',
         sellingPrice: '',
         quantity: '',
-        unit: 'Piece',
+        unit: 'Kg',
         notes: '',
       });
       setEditingTransaction(null);
@@ -182,7 +182,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
       productName: txn.productName,
       sellingPrice: txn.sellingPrice,
       quantity: txn.quantity,
-      unit: txn.unit || 'Piece',
+      unit: txn.unit || 'Kg',
       notes: txn.notes || '',
     });
     setEditingTransaction(txn);
@@ -330,10 +330,10 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
                   enabled={!isLoading}
                   style={styles.picker}
                 >
-                  <Picker.Item label="Piece" value="Piece" />
                   <Picker.Item label="Kg" value="Kg" />
                   <Picker.Item label="Litre" value="Litre" />
                   <Picker.Item label="Box" value="Box" />
+                  <Picker.Item label="Piece" value="Piece" />
                 </Picker>
               </View>
 

@@ -4,10 +4,12 @@ export interface PurchaseTransaction {
   date: string;
   name: string; // Product Name
   amount: string; // Purchasing Price
-  quantity: string; 
-  unit: string; 
-  notes?: string; 
-  status: string; 
+  quantity: string;
+  unit: string;
+  totalAmount: number;
+  notes?: string;
+
+  status: string;
 }
 
 // Sales Transaction Interface
@@ -18,8 +20,9 @@ export interface SalesTransaction {
   sellingPrice: string;
   quantity: string;
   unit: string;
+  totalAmount: number;
   notes?: string;
-  status: string; 
+  status: string;
 }
 
 // Inventory Transaction Interface
@@ -34,9 +37,9 @@ export interface InventoryTransaction {
 export interface TransactionFormData {
   name: string;
   amount: string; // Purchasing Price
-  quantity: string; 
-  unit: string; 
-  notes?: string; 
+  quantity: string;
+  unit: string;
+  notes?: string;
 }
 
 export interface SalesTransactionFormData {
@@ -53,7 +56,7 @@ export interface InventoryFormData {
   quantity: string;
 }
 
-// Generic interface for backward compatibility 
+// Generic interface for backward compatibility
 export interface SavedTransaction {
   id: string;
   date: string;

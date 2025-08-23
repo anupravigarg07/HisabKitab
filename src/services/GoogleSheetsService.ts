@@ -189,6 +189,9 @@ class GoogleSheetsService {
           transactionData.amount, // Purchasing Price
           transactionData.quantity,
           transactionData.unit,
+          transactionData.amount && transactionData.quantity
+            ? Number(transactionData.amount) * Number(transactionData.quantity)
+            : 0, // Calculate total amount
           transactionData.notes || '',
           'Active',
         ],
@@ -257,8 +260,9 @@ class GoogleSheetsService {
           amount: row[3] || '',
           quantity: row[4] || '',
           unit: row[5] || '',
-          notes: row[6] || '',
-          status: row[7] || 'Active', // default to Active if not present
+          totalAmount: row[3] && row[4] ? Number(row[3]) * Number(row[4]) : 0,
+          notes: row[7] || '',
+          status: row[8] || 'Active', // default to Active if not present
         }),
       );
 
@@ -292,6 +296,10 @@ class GoogleSheetsService {
           transactionData.sellingPrice,
           transactionData.quantity,
           transactionData.unit,
+          transactionData.sellingPrice && transactionData.quantity
+            ? Number(transactionData.sellingPrice) *
+              Number(transactionData.quantity)
+            : 0, // Calculate total amount
           transactionData.notes || '',
           'Active',
         ],
@@ -361,8 +369,9 @@ class GoogleSheetsService {
           sellingPrice: row[3] || '',
           quantity: row[4] || '',
           unit: row[5] || '',
-          notes: row[6] || '',
-          status: row[7] || 'Active', // default to Active if not present
+          totalAmount: row[3] && row[4] ? Number(row[3]) * Number(row[4]) : 0,
+          notes: row[7] || '',
+          status: row[8] || 'Active', // default to Active if not present
         }),
       );
 
@@ -388,8 +397,10 @@ class GoogleSheetsService {
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
       const encodedSheetName = encodeURIComponent('sales');
+
+      // 🔹 Fetch A:I (include Status column)
       const response = await fetch(
-        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}!A:H`,
+        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}!A:I`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         },
@@ -401,6 +412,8 @@ class GoogleSheetsService {
 
       const result = await response.json();
       const rows = result.values || [];
+
+      // 🔹 Find row by ID
       const rowIndex = rows.findIndex((row: string[]) => row[0] === id);
 
       if (rowIndex === -1) {
@@ -408,13 +421,15 @@ class GoogleSheetsService {
       }
 
       const oldRow = rows[rowIndex];
+
+      // 🔹 Archive the old row (set Status = Archived in column I)
       const archivedRow = [...oldRow];
-      archivedRow[7] = 'Archived';
+      archivedRow[8] = 'Archived';
 
       await fetch(
         `${
           GOOGLE_APIS.SHEETS_BASE_URL
-        }/${spreadsheetId}/values/${encodedSheetName}!A${rowIndex + 1}:H${
+        }/${spreadsheetId}/values/${encodedSheetName}!A${rowIndex + 1}:I${
           rowIndex + 1
         }?valueInputOption=RAW`,
         {
@@ -427,6 +442,7 @@ class GoogleSheetsService {
         },
       );
 
+      // 🔹 Append new "Active" row
       const newRow = [
         id, // keep same ID for traceability
         transactionData.date || oldRow[1],
@@ -434,12 +450,16 @@ class GoogleSheetsService {
         transactionData.sellingPrice || oldRow[3],
         transactionData.quantity || oldRow[4],
         transactionData.unit || oldRow[5],
-        transactionData.notes || oldRow[6],
+        transactionData.sellingPrice && transactionData.quantity
+          ? Number(transactionData.sellingPrice) *
+            Number(transactionData.quantity)
+          : oldRow[6], // Calculate total amount
+        transactionData.notes || oldRow[7],
         'Active', // new entry should always be Active
       ];
 
       await fetch(
-        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}!A:H:append?valueInputOption=RAW`,
+        `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}!A:I:append?valueInputOption=RAW`,
         {
           method: 'POST',
           headers: {
@@ -477,7 +497,7 @@ class GoogleSheetsService {
       const rowNumber = activeTransactionIndex + 2; // +2 because sheet has headers
 
       // Update Status column H to "Deleted"
-      const statusRange = `${encodedSheetName}!H${rowNumber}`;
+      const statusRange = `${encodedSheetName}!I${rowNumber}`;
       const response = await fetch(
         `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${statusRange}?valueInputOption=RAW`,
         {
@@ -678,7 +698,7 @@ class GoogleSheetsService {
         transactions[i].id === transactionId &&
         transactions[i].status === 'Active'
       ) {
-        const archiveRange = `${encodedSheetName}!H${i + 2}`; // Status column H
+        const archiveRange = `${encodedSheetName}!I${i + 2}`; // Status column H
         await fetch(
           `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${archiveRange}?valueInputOption=RAW`,
           {
@@ -702,6 +722,9 @@ class GoogleSheetsService {
         updatedData.amount,
         updatedData.quantity,
         updatedData.unit,
+        updatedData.amount && updatedData.quantity
+          ? Number(updatedData.amount) * Number(updatedData.quantity)
+          : 0, // Calculate total amount
         updatedData.notes || '',
         'Active',
       ],
@@ -744,7 +767,7 @@ class GoogleSheetsService {
       const rowNumber = activeTransactionIndex + 2; // +2 because sheet has headers
 
       // Update Status column H to "Deleted"
-      const statusRange = `${encodedSheetName}!H${rowNumber}`;
+      const statusRange = `${encodedSheetName}!I${rowNumber}`;
       const response = await fetch(
         `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${statusRange}?valueInputOption=RAW`,
         {
