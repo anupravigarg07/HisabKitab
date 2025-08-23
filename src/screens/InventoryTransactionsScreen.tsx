@@ -15,7 +15,7 @@ import HamburgerMenu from '../components/HamburgerMenu';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
-import GoogleSheetsService from '../services/GoogleSheetsService';
+import GoogleSheetsService from '../services/GoogleSheetServices/GoogleSheetsService';
 import {
   SavedTransaction,
   InventoryTransaction,

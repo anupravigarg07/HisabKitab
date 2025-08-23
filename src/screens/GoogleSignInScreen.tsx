@@ -10,7 +10,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
-import GoogleSignInService from '../services/GoogleSignInService';
+import GoogleSignInService from '../services/GoogleSignInService/GoogleSignInService';
 
 type NavigationType = NativeStackNavigationProp<
   RootStackParamList,

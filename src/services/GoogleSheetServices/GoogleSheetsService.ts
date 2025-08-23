@@ -1,11 +1,11 @@
-import { GOOGLE_APIS, SHEET_CONFIGS } from '../utils/constants';
-import GoogleSignInService from './GoogleSignInService';
+import { GOOGLE_APIS, SHEET_CONFIGS } from '../../utils/constants';
+import GoogleSignInService from '../GoogleSignInService/GoogleSignInService';
 import {
   GoogleSpreadsheet,
   GoogleDriveFile,
   GoogleDriveSearchResponse,
   GoogleSheetsResponse,
-} from '../types/GoogleSheetTypes';
+} from '../../types/GoogleSheetTypes';
 import {
   TransactionFormData,
   SalesTransactionFormData,
@@ -14,7 +14,7 @@ import {
   SalesTransaction,
   InventoryTransaction,
   SavedTransaction, // Keep for backward compatibility
-} from '../types/TransactionTypes';
+} from '../../types/TransactionTypes';
 
 class GoogleSheetsService {
   // Generate unique ID for transactions
@@ -609,75 +609,6 @@ class GoogleSheetsService {
       throw error;
     }
   }
-
-  // Legacy Methods (updated for backward compatibility)
-  // async saveTransaction(
-  //   userEmail: string,
-  //   transactionData: TransactionFormData,
-  // ): Promise<GoogleSheetsResponse> {
-  //   // Redirect to new purchase method
-  //   return this.savePurchaseTransaction(userEmail, transactionData);
-  // }
-
-  // async getTransactions(
-  //   userEmail: string,
-  //   sheetName: string = 'purchase details',
-  // ): Promise<SavedTransaction[]> {
-  //   try {
-  //     const accessToken = await GoogleSignInService.getAccessToken();
-  //     const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
-
-  //     const encodedSheetName = encodeURIComponent(sheetName);
-  //     const response = await fetch(
-  //       `${GOOGLE_APIS.SHEETS_BASE_URL}/${spreadsheetId}/values/${encodedSheetName}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       },
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `HTTP error! status: ${response.status}, message: ${errorText}`,
-  //       );
-  //     }
-
-  //     const result = await response.json();
-  //     const values = result.values || [];
-
-  //     // Handle both old format (without ID) and new format (with ID)
-  //     return values.slice(1).map((row: string[]): SavedTransaction => {
-  //       if (row.length >= 6) {
-  //         // New format: [id, date, name, number, amount, message]
-  //         return {
-  //           id: row[0] || '',
-  //           date: row[1] || '',
-  //           name: row[2] || '',
-  //           number: row[3] || '',
-  //           amount: row[4] || '',
-  //           message: row[5] || '',
-  //         };
-  //       } else {
-  //         // Old format: [date, name, number, amount, message]
-  //         return {
-  //           id: `LEGACY_${Date.now()}_${Math.random()
-  //             .toString(36)
-  //             .substring(2, 8)}`, // Generate ID for legacy data
-  //           date: row[0] || '',
-  //           name: row[1] || '',
-  //           number: row[2] || '',
-  //           amount: row[3] || '',
-  //           message: row[4] || '',
-  //         };
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error('Error getting transactions:', error);
-  //     throw error;
-  //   }
-  // }
 
   async updatePurchaseTransactionById(
     userEmail: string,

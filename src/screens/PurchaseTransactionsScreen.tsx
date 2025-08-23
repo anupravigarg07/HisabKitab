@@ -16,7 +16,7 @@ import { Picker } from '@react-native-picker/picker';
 import HamburgerMenu from '../components/HamburgerMenu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
-import GoogleSheetsService from '../services/GoogleSheetsService';
+import GoogleSheetsService from '../services/GoogleSheetServices/GoogleSheetsService';
 import { PurchaseTransaction } from '../types/TransactionTypes';
 
 type Props = NativeStackScreenProps<
