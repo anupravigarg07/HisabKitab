@@ -17,14 +17,14 @@ import HamburgerMenu from '../components/HamburgerMenu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../App';
 import GoogleSheetsService from '../services/GoogleSheetsService';
-import { SalesTransaction } from '../types/transactionstypes';
+import { PurchaseTransaction } from '../types/TransactionTypes';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  'ManageSalesTransactions'
+  'ManagePurchaseTransactions'
 >;
 
-const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
+const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
   const { name, email, photo } = route.params;
 
   if (!email) {
@@ -32,20 +32,20 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
     return null;
   }
 
-  const [activeTab, setActiveTab] = useState('Sales');
+  const [activeTab, setActiveTab] = useState('Purchase');
   const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(true);
-  const [transactions, setTransactions] = useState<SalesTransaction[]>([]);
+  const [transactions, setTransactions] = useState<PurchaseTransaction[]>([]);
   const [formData, setFormData] = useState({
-    productName: '',
-    sellingPrice: '',
+    name: '',
+    amount: '',
     quantity: '',
     unit: 'Kg',
     notes: '',
   });
   const [editingTransaction, setEditingTransaction] =
-    useState<SalesTransaction | null>(null);
+    useState<PurchaseTransaction | null>(null);
 
   useEffect(() => {
     fetchTransactions();
@@ -54,28 +54,28 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
   const fetchTransactions = async () => {
     setIsFetchingTransactions(true);
     try {
-      const data = await GoogleSheetsService.getSalesTransactions(email);
+      const data = await GoogleSheetsService.getPurchaseTransactions(email);
       setTransactions(data);
     } catch (error) {
-      console.error('Failed to fetch sales transactions:', error);
+      console.error('Failed to fetch purchase transactions:', error);
     } finally {
       setIsFetchingTransactions(false);
     }
   };
 
   const handleSave = async () => {
-    const { productName, sellingPrice, quantity, unit, notes } = formData;
+    const { name: transactionName, amount, quantity, unit, notes } = formData;
 
-    if (!productName || !sellingPrice || !quantity) {
+    if (!transactionName || !amount || !quantity) {
       Alert.alert(
         'Validation Error',
-        'Please fill all required fields (Product Name, Selling Price, and Quantity)',
+        'Please fill all required fields (Product Name, Purchasing Price, and Quantity)',
       );
       return;
     }
 
-    if (isNaN(Number(sellingPrice)) || Number(sellingPrice) <= 0) {
-      Alert.alert('Validation Error', 'Please enter a valid selling price');
+    if (isNaN(Number(amount)) || Number(amount) <= 0) {
+      Alert.alert('Validation Error', 'Please enter a valid purchasing price');
       return;
     }
 
@@ -88,32 +88,32 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
 
     try {
       if (editingTransaction) {
-        await GoogleSheetsService.updateSalesTransactionById(
+        await GoogleSheetsService.updatePurchaseTransactionById(
           email,
           editingTransaction.id,
           {
-            productName,
-            sellingPrice,
+            name: transactionName,
+            amount,
             quantity,
             unit,
             notes,
           },
         );
-        Alert.alert('Success', 'Sales transaction updated successfully!');
+        Alert.alert('Success', 'Purchase transaction updated successfully!');
       } else {
-        await GoogleSheetsService.saveSalesTransaction(email, {
-          productName,
-          sellingPrice,
+        await GoogleSheetsService.savePurchaseTransaction(email, {
+          name: transactionName,
+          amount,
           quantity,
           unit,
           notes,
         });
-        Alert.alert('Success', 'Sales transaction saved successfully!');
+        Alert.alert('Success', 'Purchase transaction saved successfully!');
       }
 
       setFormData({
-        productName: '',
-        sellingPrice: '',
+        name: '',
+        amount: '',
         quantity: '',
         unit: 'Kg',
         notes: '',
@@ -137,8 +137,8 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
     if (!isLoading) {
       setModalVisible(false);
       setFormData({
-        productName: '',
-        sellingPrice: '',
+        name: '',
+        amount: '',
         quantity: '',
         unit: 'Kg',
         notes: '',
@@ -158,7 +158,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              await GoogleSheetsService.deleteSalesTransactionById(
+              await GoogleSheetsService.deletePurchaseTransactionById(
                 email,
                 transactionId,
               );
@@ -177,10 +177,10 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
     );
   };
 
-  const handleEditTransaction = (txn: SalesTransaction) => {
+  const handleEditTransaction = (txn: PurchaseTransaction) => {
     setFormData({
-      productName: txn.productName,
-      sellingPrice: txn.sellingPrice,
+      name: txn.name,
+      amount: txn.amount,
       quantity: txn.quantity,
       unit: txn.unit || 'Kg',
       notes: txn.notes || '',
@@ -205,9 +205,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           {transactions.map((txn, index) => (
             <View key={txn.id || index} style={styles.transactionCard}>
               <View style={styles.transactionInfo}>
-                <Text style={styles.transactionName}>{txn.productName}</Text>
+                <Text style={styles.transactionName}>{txn.name}</Text>
                 <Text style={styles.transactionDetails}>
-                  {txn.quantity} {txn.unit} • ₹{txn.sellingPrice}
+                  {txn.quantity} {txn.unit} • ₹{txn.amount}
                 </Text>
                 {txn.notes ? (
                   <Text style={styles.transactionNotes}>{txn.notes}</Text>
@@ -267,7 +267,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           style={styles.addButton}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.addButtonText}>Add Sales</Text>
+          <Text style={styles.addButtonText}>Add Purchase</Text>
         </TouchableOpacity>
       </View>
 
@@ -281,7 +281,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {editingTransaction ? 'Edit Sales' : 'Add Sales'}
+                {editingTransaction ? 'Edit Purchase' : 'Add Purchase'}
               </Text>
               <TouchableOpacity
                 onPress={closeModal}
@@ -299,16 +299,16 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
             >
               <TextInput
                 placeholder="Product Name"
-                value={formData.productName}
-                onChangeText={text => handleInputChange('productName', text)}
+                value={formData.name}
+                onChangeText={text => handleInputChange('name', text)}
                 style={styles.inputField}
                 editable={!isLoading}
               />
 
               <TextInput
-                placeholder="Selling Price"
-                value={formData.sellingPrice}
-                onChangeText={text => handleInputChange('sellingPrice', text)}
+                placeholder="Purchasing Price"
+                value={formData.amount}
+                onChangeText={text => handleInputChange('amount', text)}
                 style={styles.inputField}
                 keyboardType="numeric"
                 editable={!isLoading}
@@ -369,7 +369,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
   );
 };
 
-export default ManageSalesTransactions;
+export default ManagePurchaseTransactions;
 
 const styles = StyleSheet.create({
   container: {

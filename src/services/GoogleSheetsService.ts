@@ -5,7 +5,7 @@ import {
   GoogleDriveFile,
   GoogleDriveSearchResponse,
   GoogleSheetsResponse,
-} from '../types/googletypes';
+} from '../types/GoogleSheetTypes';
 import {
   TransactionFormData,
   SalesTransactionFormData,
@@ -14,7 +14,7 @@ import {
   SalesTransaction,
   InventoryTransaction,
   SavedTransaction, // Keep for backward compatibility
-} from '../types/transactionstypes';
+} from '../types/TransactionTypes';
 
 class GoogleSheetsService {
   // Generate unique ID for transactions

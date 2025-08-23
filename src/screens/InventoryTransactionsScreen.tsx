@@ -19,7 +19,7 @@ import GoogleSheetsService from '../services/GoogleSheetsService';
 import {
   SavedTransaction,
   InventoryTransaction,
-} from '../types/transactionstypes';
+} from '../types/TransactionTypes';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,

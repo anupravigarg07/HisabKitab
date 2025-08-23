@@ -5,10 +5,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import GoogleSignInScreen from './src/screens/GoogleSignInScreen';
 
-import ManagePurchaseTransactions from './src/screens/ManagePurchaseTransactions';
-import ManageSalesTransactions from './src/screens/ManageSalesTransactions';
-import ManageInventoryTransactions from './src/screens/ManageInventoryTransactions';
-import HomePage from './src/screens/HomePage';
+import ManagePurchaseTransactions from './src/screens/PurchaseTransactionsScreen';
+import ManageSalesTransactions from './src/screens/SalesTransactionsScreen';
+import ManageInventoryTransactions from './src/screens/InventoryTransactionsScreen';
+import HomePage from './src/screens/HomePageScreen';
 
 export type RootStackParamList = {
   GoogleSignIn: undefined;
