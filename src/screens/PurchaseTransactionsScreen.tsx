@@ -74,12 +74,15 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
       return;
     }
 
-    if (isNaN(Number(amount)) || Number(amount) <= 0) {
+    const amountNum = Number(amount);
+    const quantityNum = Number(quantity);
+
+    if (isNaN(amountNum) || amountNum <= 0) {
       Alert.alert('Validation Error', 'Please enter a valid purchasing price');
       return;
     }
 
-    if (isNaN(Number(quantity)) || Number(quantity) <= 0) {
+    if (isNaN(quantityNum) || quantityNum <= 0) {
       Alert.alert('Validation Error', 'Please enter a valid quantity');
       return;
     }
@@ -93,8 +96,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
           editingTransaction.id,
           {
             name: transactionName,
-            amount,
-            quantity,
+            amount: amountNum, // ✅ parsed number
+            quantity: quantityNum, // ✅ parsed number
             unit,
             notes,
           },
@@ -103,8 +106,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
       } else {
         await GoogleSheetsService.savePurchaseTransaction(email, {
           name: transactionName,
-          amount,
-          quantity,
+          amount: amountNum, // ✅ parsed number
+          quantity: quantityNum, // ✅ parsed number
           unit,
           notes,
         });
@@ -180,8 +183,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
   const handleEditTransaction = (txn: PurchaseTransaction) => {
     setFormData({
       name: txn.name,
-      amount: txn.amount,
-      quantity: txn.quantity,
+      amount: String(txn.amount), // ✅ convert to string for TextInput
+      quantity: String(txn.quantity), // ✅ convert to string
       unit: txn.unit || 'Kg',
       notes: txn.notes || '',
     });
@@ -271,6 +274,7 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
         </TouchableOpacity>
       </View>
 
+      {/* Modal Form */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -371,11 +375,9 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
 
 export default ManagePurchaseTransactions;
 
+// 🔽 styles remain unchanged...
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F8F8',
-  },
+  container: { flex: 1, backgroundColor: '#F8F8F8' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -397,19 +399,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
-  tabTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#000',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  transactionsContainer: {
-    paddingTop: 20,
-    paddingBottom: 100,
-  },
+  tabTitle: { fontSize: 16, fontWeight: '500', color: '#000' },
+  content: { flex: 1, paddingHorizontal: 20 },
+  transactionsContainer: { paddingTop: 20, paddingBottom: 100 },
   transactionCard: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
@@ -419,43 +411,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
   },
-  transactionInfo: {
-    flex: 1,
-  },
-  transactionName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+  transactionInfo: { flex: 1 },
+  transactionName: { fontSize: 16, fontWeight: '600', color: '#000' },
   transactionDetails: {
     fontSize: 14,
     fontWeight: '500',
     color: '#FF8C00',
     marginTop: 2,
   },
-  transactionNotes: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 4,
-  },
+  transactionNotes: { fontSize: 13, color: '#666', marginTop: 4 },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
   },
-  illustration: {
-    width: 250,
-    height: 250,
-  },
+  illustration: { width: 250, height: 250 },
   bottomButtonContainer: {
     position: 'absolute',
     bottom: 0,
@@ -472,22 +448,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
   },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  addButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
   loaderContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 50,
   },
-  loaderText: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
-    fontWeight: '500',
-  },
+  loaderText: { fontSize: 16, color: '#666', marginTop: 10, fontWeight: '500' },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -513,11 +480,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-  },
+  modalTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
   closeButton: {
     padding: 8,
     borderRadius: 12,
@@ -527,19 +490,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  closeIcon: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  modalScrollView: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  scrollContent: {
-    paddingVertical: 20,
-    paddingBottom: 10,
-  },
+  closeIcon: { fontSize: 16, color: '#666', fontWeight: 'bold' },
+  modalScrollView: { flex: 1, paddingHorizontal: 24 },
+  scrollContent: { paddingVertical: 20, paddingBottom: 10 },
   inputField: {
     backgroundColor: '#F8F8F8',
     paddingHorizontal: 16,
@@ -551,10 +504,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     minHeight: 50,
   },
-  notesField: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
+  notesField: { minHeight: 80, textAlignVertical: 'top' },
   pickerContainer: {
     backgroundColor: '#F8F8F8',
     borderRadius: 8,
@@ -562,10 +512,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
     justifyContent: 'center',
   },
-  picker: {
-    color: '#000',
-    backgroundColor: 'transparent',
-  },
+  picker: { color: '#000', backgroundColor: 'transparent' },
   saveButton: {
     backgroundColor: '#FF8C00',
     paddingVertical: 16,
@@ -575,20 +522,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  disabledButton: {
-    backgroundColor: '#ccc',
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  actionIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    marginLeft: 12,
-    padding: 4,
-  },
+  disabledButton: { backgroundColor: '#ccc' },
+  saveButtonText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
+  actionIcons: { flexDirection: 'row', alignItems: 'center' },
+  iconButton: { marginLeft: 12, padding: 4 },
 });

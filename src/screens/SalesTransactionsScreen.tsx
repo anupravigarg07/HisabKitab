@@ -38,8 +38,8 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(true);
   const [transactions, setTransactions] = useState<SalesTransaction[]>([]);
   const [formData, setFormData] = useState({
-    productName: '',
-    sellingPrice: '',
+    name: '',
+    amount: '',
     quantity: '',
     unit: 'Kg',
     notes: '',
@@ -64,9 +64,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
   };
 
   const handleSave = async () => {
-    const { productName, sellingPrice, quantity, unit, notes } = formData;
+    const { name: transactionName, amount, quantity, unit, notes } = formData;
 
-    if (!productName || !sellingPrice || !quantity) {
+    if (!transactionName || !amount || !quantity) {
       Alert.alert(
         'Validation Error',
         'Please fill all required fields (Product Name, Selling Price, and Quantity)',
@@ -74,12 +74,15 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
       return;
     }
 
-    if (isNaN(Number(sellingPrice)) || Number(sellingPrice) <= 0) {
+    const amountNum = Number(amount);
+    const quantityNum = Number(quantity);
+
+    if (isNaN(amountNum) || amountNum <= 0) {
       Alert.alert('Validation Error', 'Please enter a valid selling price');
       return;
     }
 
-    if (isNaN(Number(quantity)) || Number(quantity) <= 0) {
+    if (isNaN(quantityNum) || quantityNum <= 0) {
       Alert.alert('Validation Error', 'Please enter a valid quantity');
       return;
     }
@@ -92,9 +95,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           email,
           editingTransaction.id,
           {
-            productName,
-            sellingPrice,
-            quantity,
+            productName: transactionName,
+            sellingPrice: amountNum,
+            quantity: quantityNum,
             unit,
             notes,
           },
@@ -102,9 +105,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
         Alert.alert('Success', 'Sales transaction updated successfully!');
       } else {
         await GoogleSheetsService.saveSalesTransaction(email, {
-          productName,
-          sellingPrice,
-          quantity,
+          productName: transactionName,
+          sellingPrice: amountNum,
+          quantity: quantityNum,
           unit,
           notes,
         });
@@ -112,8 +115,8 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
       }
 
       setFormData({
-        productName: '',
-        sellingPrice: '',
+        name: '',
+        amount: '',
         quantity: '',
         unit: 'Kg',
         notes: '',
@@ -137,8 +140,8 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
     if (!isLoading) {
       setModalVisible(false);
       setFormData({
-        productName: '',
-        sellingPrice: '',
+        name: '',
+        amount: '',
         quantity: '',
         unit: 'Kg',
         notes: '',
@@ -179,9 +182,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
 
   const handleEditTransaction = (txn: SalesTransaction) => {
     setFormData({
-      productName: txn.productName,
-      sellingPrice: txn.sellingPrice,
-      quantity: txn.quantity,
+      name: txn.productName,
+      amount: String(txn.sellingPrice),
+      quantity: String(txn.quantity),
       unit: txn.unit || 'Kg',
       notes: txn.notes || '',
     });
@@ -267,10 +270,11 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           style={styles.addButton}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.addButtonText}>Add Sales</Text>
+          <Text style={styles.addButtonText}>Add Sale</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Modal Form */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -281,7 +285,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {editingTransaction ? 'Edit Sales' : 'Add Sales'}
+                {editingTransaction ? 'Edit Sale' : 'Add Sale'}
               </Text>
               <TouchableOpacity
                 onPress={closeModal}
@@ -299,16 +303,16 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
             >
               <TextInput
                 placeholder="Product Name"
-                value={formData.productName}
-                onChangeText={text => handleInputChange('productName', text)}
+                value={formData.name}
+                onChangeText={text => handleInputChange('name', text)}
                 style={styles.inputField}
                 editable={!isLoading}
               />
 
               <TextInput
                 placeholder="Selling Price"
-                value={formData.sellingPrice}
-                onChangeText={text => handleInputChange('sellingPrice', text)}
+                value={formData.amount}
+                onChangeText={text => handleInputChange('amount', text)}
                 style={styles.inputField}
                 keyboardType="numeric"
                 editable={!isLoading}
@@ -371,11 +375,9 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
 
 export default ManageSalesTransactions;
 
+// 🔽 styles copied from purchase screen (same UI)
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F8F8',
-  },
+  container: { flex: 1, backgroundColor: '#F8F8F8' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -397,19 +399,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
-  tabTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#000',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  transactionsContainer: {
-    paddingTop: 20,
-    paddingBottom: 100,
-  },
+  tabTitle: { fontSize: 16, fontWeight: '500', color: '#000' },
+  content: { flex: 1, paddingHorizontal: 20 },
+  transactionsContainer: { paddingTop: 20, paddingBottom: 100 },
   transactionCard: {
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
@@ -419,43 +411,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
   },
-  transactionInfo: {
-    flex: 1,
-  },
-  transactionName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+  transactionInfo: { flex: 1 },
+  transactionName: { fontSize: 16, fontWeight: '600', color: '#000' },
   transactionDetails: {
     fontSize: 14,
     fontWeight: '500',
     color: '#FF8C00',
     marginTop: 2,
   },
-  transactionNotes: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 4,
-  },
+  transactionNotes: { fontSize: 13, color: '#666', marginTop: 4 },
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
   },
-  illustration: {
-    width: 250,
-    height: 250,
-  },
+  illustration: { width: 250, height: 250 },
   bottomButtonContainer: {
     position: 'absolute',
     bottom: 0,
@@ -472,22 +448,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
   },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  addButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
   loaderContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 50,
   },
-  loaderText: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
-    fontWeight: '500',
-  },
+  loaderText: { fontSize: 16, color: '#666', marginTop: 10, fontWeight: '500' },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -513,11 +480,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-  },
+  modalTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
   closeButton: {
     padding: 8,
     borderRadius: 12,
@@ -527,19 +490,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  closeIcon: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  modalScrollView: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  scrollContent: {
-    paddingVertical: 20,
-    paddingBottom: 10,
-  },
+  closeIcon: { fontSize: 16, color: '#666', fontWeight: 'bold' },
+  modalScrollView: { flex: 1, paddingHorizontal: 24 },
+  scrollContent: { paddingVertical: 20, paddingBottom: 10 },
   inputField: {
     backgroundColor: '#F8F8F8',
     paddingHorizontal: 16,
@@ -551,10 +504,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     minHeight: 50,
   },
-  notesField: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
+  notesField: { minHeight: 80, textAlignVertical: 'top' },
   pickerContainer: {
     backgroundColor: '#F8F8F8',
     borderRadius: 8,
@@ -562,10 +512,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
     justifyContent: 'center',
   },
-  picker: {
-    color: '#000',
-    backgroundColor: 'transparent',
-  },
+  picker: { color: '#000', backgroundColor: 'transparent' },
   saveButton: {
     backgroundColor: '#FF8C00',
     paddingVertical: 16,
@@ -575,20 +522,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  disabledButton: {
-    backgroundColor: '#ccc',
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  actionIcons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    marginLeft: 12,
-    padding: 4,
-  },
+  disabledButton: { backgroundColor: '#ccc' },
+  saveButtonText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
+  actionIcons: { flexDirection: 'row', alignItems: 'center' },
+  iconButton: { marginLeft: 12, padding: 4 },
 });
