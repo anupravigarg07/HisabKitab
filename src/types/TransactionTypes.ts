@@ -2,14 +2,21 @@
 export interface PurchaseTransaction {
   id: string;
   date: string;
-  name: string; // Product Name
-  amount: string; // Purchasing Price
-  quantity: string;
+  name: string;
+  amount: number;
+  quantity: number;
   unit: string;
   totalAmount: number;
   notes?: string;
-
   status: string;
+}
+
+export interface TransactionFormData {
+  name: string;
+  amount: number;
+  quantity: number;
+  unit: string;
+  notes?: string;
 }
 
 // Sales Transaction Interface
@@ -17,43 +24,44 @@ export interface SalesTransaction {
   id: string;
   date: string;
   productName: string;
-  sellingPrice: string;
-  quantity: string;
+  sellingPrice: number;
+  quantity: number;
   unit: string;
   totalAmount: number;
   notes?: string;
   status: string;
 }
 
-// Inventory Transaction Interface
-export interface InventoryTransaction {
-  date: string;
-  name: string;
-  sellingPrice: string;
-  quantity: string;
-}
-
-//Purchase Form Data Interfaces
-export interface TransactionFormData {
-  name: string;
-  amount: string; // Purchasing Price
-  quantity: string;
-  unit: string;
-  notes?: string;
-}
-
 export interface SalesTransactionFormData {
   productName: string;
-  sellingPrice: string;
-  quantity: string;
+  sellingPrice: number;
+  quantity: number;
   unit: string;
   notes?: string;
 }
 
+// Inventory Transaction Interface
+export interface InventoryTransaction {
+  id: string;
+  date: string; // last updated date for this stock
+  productName: string;
+  quantity: number;
+  unit: string;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  totalValue?: number;
+  notes?: string;
+  status: string;
+}
+
+// Inventory Form Data Interface
 export interface InventoryFormData {
-  name: string;
-  sellingPrice: string;
-  quantity: string;
+  productName: string;
+  quantity: number;
+  unit: string;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  notes?: string;
 }
 
 // Generic interface for backward compatibility

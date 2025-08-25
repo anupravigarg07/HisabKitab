@@ -8,6 +8,10 @@ import {
 
 class GoogleSignInService {
   private isConfigured = false;
+  private tokenPromise: Promise<string> | null = null;
+  private lastTokenTime = 0;
+  private cachedToken: string | null = null;
+  private readonly TOKEN_CACHE_DURATION = 5 * 60 * 1000;
 
   constructor() {
     this.configure();
@@ -39,6 +43,8 @@ class GoogleSignInService {
       console.log('SignInResponse', signInResponse);
 
       if (signInResponse.type === 'success') {
+        // Clear any cached tokens when user signs in
+        this.clearTokenCache();
         return (signInResponse as SignInSuccessResponse).data;
       }
 
@@ -58,20 +64,69 @@ class GoogleSignInService {
 
   async signOut(): Promise<void> {
     await GoogleSignin.signOut();
+    this.clearTokenCache();
+  }
+
+  private clearTokenCache() {
+    this.cachedToken = null;
+    this.lastTokenTime = 0;
+    this.tokenPromise = null;
+  }
+
+  private isTokenCacheValid(): boolean {
+    return (
+      this.cachedToken !== null &&
+      Date.now() - this.lastTokenTime < this.TOKEN_CACHE_DURATION
+    );
   }
 
   async getAccessToken(): Promise<string> {
     try {
-      const currentUser = await GoogleSignin.getCurrentUser();
-      if (!currentUser) {
-        throw new Error('User not signed in');
+      // Return cached token if still valid
+      if (this.isTokenCacheValid()) {
+        console.log('Using cached access token');
+        return this.cachedToken!;
       }
-      const tokens = await GoogleSignin.getTokens();
-      return tokens.accessToken;
+
+      // If there's already a token request in progress, wait for it
+      if (this.tokenPromise) {
+        console.log('Waiting for existing token request');
+        return await this.tokenPromise;
+      }
+
+      // Start a new token request
+      console.log('Fetching new access token');
+      this.tokenPromise = this.fetchNewAccessToken();
+
+      try {
+        const token = await this.tokenPromise;
+        return token;
+      } finally {
+        // Clear the promise after completion (success or failure)
+        this.tokenPromise = null;
+      }
     } catch (error) {
       console.error('Error getting access token:', error);
+      // Clear cache and promise on error
+      this.clearTokenCache();
       throw error;
     }
+  }
+
+  private async fetchNewAccessToken(): Promise<string> {
+    const currentUser = await GoogleSignin.getCurrentUser();
+    if (!currentUser) {
+      throw new Error('User not signed in');
+    }
+
+    const tokens = await GoogleSignin.getTokens();
+
+    // Cache the token
+    this.cachedToken = tokens.accessToken;
+    this.lastTokenTime = Date.now();
+
+    console.log('Access token fetched and cached');
+    return tokens.accessToken;
   }
 
   getErrorMessage(error: any): string {

@@ -3,12 +3,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import GoogleSignInScreen from './src/screens/GoogleSignInScreen';
+import GoogleSignInScreen from './src/screens/GoogleSignInScreen/GoogleSignInScreen';
 
-import ManagePurchaseTransactions from './src/screens/PurchaseTransactionsScreen';
-import ManageSalesTransactions from './src/screens/SalesTransactionsScreen';
-import ManageInventoryTransactions from './src/screens/InventoryTransactionsScreen';
-import HomePage from './src/screens/HomePageScreen';
+import PurchaseTransactionsScreen from './src/screens/PurchaseTransactionsScreen/PurchaseTransactionsScreen';
+import SalesTransactionsScreen from './src/screens/SalesTransactionsScreen/SalesTransactionsScreen';
+import InventoryTransactionsScreen from './src/screens/InventoryTransactionsScreen/InventoryTransactionsScreen';
+import HomePage from './src/screens/HomePageScreen/HomePageScreen';
 
 export type RootStackParamList = {
   GoogleSignIn: undefined;
@@ -19,17 +19,17 @@ export type RootStackParamList = {
     photo?: string;
   };
 
-  ManagePurchaseTransactions: {
+  PurchaseTransactionsScreen: {
     name: string;
     email: string;
     photo?: string;
   };
-  ManageSalesTransactions: {
+  SalesTransactionsScreen: {
     name: string;
     email: string;
     photo?: string;
   };
-  ManageInventoryTransactions: {
+  InventoryTransactionsScreen: {
     name: string;
     email: string;
     photo?: string;
@@ -51,16 +51,16 @@ const App = () => {
           <Stack.Screen name="HomePage" component={HomePage} />
 
           <Stack.Screen
-            name="ManagePurchaseTransactions"
-            component={ManagePurchaseTransactions}
+            name="PurchaseTransactionsScreen"
+            component={PurchaseTransactionsScreen}
           />
           <Stack.Screen
-            name="ManageSalesTransactions"
-            component={ManageSalesTransactions}
+            name="SalesTransactionsScreen"
+            component={SalesTransactionsScreen}
           />
           <Stack.Screen
-            name="ManageInventoryTransactions"
-            component={ManageInventoryTransactions}
+            name="InventoryTransactionsScreen"
+            component={InventoryTransactionsScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
