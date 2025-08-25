@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
   Image,
   TouchableOpacity,
@@ -13,11 +12,12 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Picker } from '@react-native-picker/picker';
-import HamburgerMenu from '../components/HamburgerMenu';
+import HamburgerMenu from '../../components/HamburgerMenu';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import GoogleSheetsService from '../services/GoogleSheetServices/GoogleSheetsService';
-import { SalesTransaction } from '../types/TransactionTypes';
+import { RootStackParamList } from '../../../App';
+import GoogleSheetsService from '../../services/GoogleSheetServices/GoogleSheetsService';
+import { SalesTransaction } from '../../types/TransactionTypes';
+import { styles } from './SalesTransactionsScreen.styles';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -374,155 +374,3 @@ const SalesTransactionsScreen: React.FC<Props> = ({ route }) => {
 };
 
 export default SalesTransactionsScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8F8F8' },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-    backgroundColor: '#FFFFFF',
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    flex: 1,
-    textAlign: 'center',
-  },
-  tabSection: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  tabTitle: { fontSize: 16, fontWeight: '500', color: '#000' },
-  content: { flex: 1, paddingHorizontal: 20 },
-  transactionsContainer: { paddingTop: 20, paddingBottom: 100 },
-  transactionCard: {
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    marginBottom: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  transactionInfo: { flex: 1 },
-  transactionName: { fontSize: 16, fontWeight: '600', color: '#000' },
-  transactionDetails: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#FF8C00',
-    marginTop: 2,
-  },
-  transactionNotes: { fontSize: 13, color: '#666', marginTop: 4 },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 100,
-  },
-  illustration: { width: 250, height: 250 },
-  bottomButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#F8F8F8',
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    paddingTop: 20,
-  },
-  addButton: {
-    backgroundColor: '#FF8C00',
-    paddingVertical: 16,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  addButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
-  loaderContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 50,
-  },
-  loaderText: { fontSize: 16, color: '#666', marginTop: 10, fontWeight: '500' },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 20,
-    paddingVertical: 50,
-  },
-  modalContainer: {
-    backgroundColor: '#FFFFFF',
-    width: '100%',
-    borderRadius: 15,
-    padding: 0,
-    maxHeight: '90%',
-    minHeight: '85%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  modalTitle: { fontSize: 18, fontWeight: '600', color: '#000' },
-  closeButton: {
-    padding: 8,
-    borderRadius: 12,
-    backgroundColor: '#F0F0F0',
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeIcon: { fontSize: 16, color: '#666', fontWeight: 'bold' },
-  modalScrollView: { flex: 1, paddingHorizontal: 24 },
-  scrollContent: { paddingVertical: 20, paddingBottom: 10 },
-  inputField: {
-    backgroundColor: '#F8F8F8',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 8,
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 16,
-    borderWidth: 0,
-    minHeight: 50,
-  },
-  notesField: { minHeight: 80, textAlignVertical: 'top' },
-  pickerContainer: {
-    backgroundColor: '#F8F8F8',
-    borderRadius: 8,
-    marginBottom: 16,
-    minHeight: 50,
-    justifyContent: 'center',
-  },
-  picker: { color: '#000', backgroundColor: 'transparent' },
-  saveButton: {
-    backgroundColor: '#FF8C00',
-    paddingVertical: 16,
-    marginHorizontal: 24,
-    marginBottom: 24,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  disabledButton: { backgroundColor: '#ccc' },
-  saveButtonText: { color: '#FFFFFF', fontWeight: '600', fontSize: 16 },
-  actionIcons: { flexDirection: 'row', alignItems: 'center' },
-  iconButton: { marginLeft: 12, padding: 4 },
-});

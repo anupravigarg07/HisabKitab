@@ -3,12 +3,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import GoogleSignInScreen from './src/screens/GoogleSignInScreen';
+import GoogleSignInScreen from './src/screens/GoogleSignInScreen/GoogleSignInScreen';
 
-import PurchaseTransactionsScreen from './src/screens/PurchaseTransactionsScreen';
-import SalesTransactionsScreen from './src/screens/SalesTransactionsScreen';
-import InventoryTransactionsScreen from './src/screens/InventoryTransactionsScreen';
-import HomePage from './src/screens/HomePageScreen';
+import PurchaseTransactionsScreen from './src/screens/PurchaseTransactionsScreen/PurchaseTransactionsScreen';
+import SalesTransactionsScreen from './src/screens/SalesTransactionsScreen/SalesTransactionsScreen';
+import InventoryTransactionsScreen from './src/screens/InventoryTransactionsScreen/InventoryTransactionsScreen';
+import HomePage from './src/screens/HomePageScreen/HomePageScreen';
 
 export type RootStackParamList = {
   GoogleSignIn: undefined;
