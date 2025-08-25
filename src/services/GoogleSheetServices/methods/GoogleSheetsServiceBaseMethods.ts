@@ -1,4 +1,3 @@
-// GoogleSheetsServiceBaseMethods.ts
 import { GOOGLE_APIS, SHEET_CONFIGS } from '../../../utils/constants';
 import GoogleSignInService from '../../GoogleSignInService/GoogleSignInService';
 import {

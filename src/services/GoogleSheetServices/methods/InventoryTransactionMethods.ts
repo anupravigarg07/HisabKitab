@@ -1,4 +1,3 @@
-// InventoryTransactionMethods.ts
 import { GoogleSheetsServiceBaseMethods } from './GoogleSheetsServiceBaseMethods';
 import {
   InventoryFormData,
@@ -101,18 +100,16 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
     try {
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      // Archive existing entry
       await this.archiveExistingActiveEntries(
         spreadsheetId,
         sheetName,
         transactionId,
       );
 
-      // Create updated entry
       const newValues: string[][] = [
         [
-          transactionId, // keep same ID
-          new Date().toISOString(), // new timestamp
+          transactionId,
+          new Date().toISOString(),
           updatedData.productName,
           updatedData.purchasePrice?.toString() || '',
           updatedData.sellingPrice?.toString() || '',
@@ -173,7 +170,6 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
     }
   }
 
-  // ✅ Legacy method
   async saveInventoryTransaction(
     userEmail: string,
     sheetName: string,
@@ -217,7 +213,6 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
     }
   }
 
-  // ✅ Legacy method
   async getInventoryTransactions(
     userEmail: string,
     sheetName: string,

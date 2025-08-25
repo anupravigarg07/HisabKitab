@@ -1,4 +1,3 @@
-// PurchaseTransactionMethods.ts
 import { GoogleSheetsServiceBaseMethods } from './GoogleSheetsServiceBaseMethods';
 import {
   TransactionFormData,
@@ -24,7 +23,7 @@ export class PurchaseTransactionMethods extends GoogleSheetsServiceBaseMethods {
           transactionId,
           new Date().toISOString(),
           transactionData.name,
-          String(transactionData.amount ?? ''), // ✅ force string
+          String(transactionData.amount ?? ''),
           String(transactionData.quantity ?? ''),
           transactionData.unit,
           transactionData.amount && transactionData.quantity
@@ -32,7 +31,7 @@ export class PurchaseTransactionMethods extends GoogleSheetsServiceBaseMethods {
                 Number(transactionData.amount) *
                   Number(transactionData.quantity),
               )
-            : '0', // ✅ force string
+            : '0', 
           transactionData.notes || '',
           'Active',
         ],
@@ -86,7 +85,7 @@ export class PurchaseTransactionMethods extends GoogleSheetsServiceBaseMethods {
       return transactions;
     } catch (error) {
       console.error('Error getting purchase transactions:', error);
-      throw error; // ⚡ important so UI doesn't stay stuck on loading
+      throw error; 
     }
   }
 

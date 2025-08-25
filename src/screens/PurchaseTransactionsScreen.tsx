@@ -96,8 +96,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
           editingTransaction.id,
           {
             name: transactionName,
-            amount: amountNum, // ✅ parsed number
-            quantity: quantityNum, // ✅ parsed number
+            amount: amountNum,
+            quantity: quantityNum,
             unit,
             notes,
           },
@@ -106,8 +106,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
       } else {
         await GoogleSheetsService.savePurchaseTransaction(email, {
           name: transactionName,
-          amount: amountNum, // ✅ parsed number
-          quantity: quantityNum, // ✅ parsed number
+          amount: amountNum,
+          quantity: quantityNum,
           unit,
           notes,
         });
@@ -183,8 +183,8 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
   const handleEditTransaction = (txn: PurchaseTransaction) => {
     setFormData({
       name: txn.name,
-      amount: String(txn.amount), // ✅ convert to string for TextInput
-      quantity: String(txn.quantity), // ✅ convert to string
+      amount: String(txn.amount),
+      quantity: String(txn.quantity),
       unit: txn.unit || 'Kg',
       notes: txn.notes || '',
     });
@@ -375,7 +375,6 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
 
 export default ManagePurchaseTransactions;
 
-// 🔽 styles remain unchanged...
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F8F8' },
   header: {

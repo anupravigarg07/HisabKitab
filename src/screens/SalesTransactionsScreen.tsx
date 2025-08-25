@@ -375,7 +375,6 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
 
 export default ManageSalesTransactions;
 
-// 🔽 styles copied from purchase screen (same UI)
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F8F8' },
   header: {

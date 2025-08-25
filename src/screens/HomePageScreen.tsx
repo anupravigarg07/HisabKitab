@@ -38,7 +38,7 @@ const HomePage: React.FC<Props> = ({ navigation, route }) => {
       backgroundColor: '#FFC947',
       iconName: 'shopping-bag',
       iconColor: '#FF6B6B',
-      imageSource: require('../assests/purchase.png'), // Add your image path
+      imageSource: require('../assests/purchase.png'),
       route: 'Purchase',
     },
     {
@@ -47,7 +47,7 @@ const HomePage: React.FC<Props> = ({ navigation, route }) => {
       backgroundColor: '#A78BFA',
       iconName: 'trending-up',
       iconColor: '#10B981',
-      imageSource: require('../assests/sales.png'), // Add your image path
+      imageSource: require('../assests/sales.png'),
       route: 'Sales',
     },
     {
@@ -56,7 +56,7 @@ const HomePage: React.FC<Props> = ({ navigation, route }) => {
       backgroundColor: '#F3E8D0',
       iconName: 'inventory',
       iconColor: '#F59E0B',
-      imageSource: require('../assests/Inventory.png'), // Add your image path
+      imageSource: require('../assests/Inventory.png'),
       route: 'Inventory',
     },
     {
@@ -65,7 +65,7 @@ const HomePage: React.FC<Props> = ({ navigation, route }) => {
       backgroundColor: '#FFC947',
       iconName: 'history',
       iconColor: '#8B5CF6',
-      imageSource: require('../assests/InventoryHistory.png'), // Add your image path
+      imageSource: require('../assests/InventoryHistory.png'),
       route: 'History',
     },
   ];

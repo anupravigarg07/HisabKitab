@@ -1,4 +1,3 @@
-// GoogleSheetsService.ts (Fixed - uses centralized token management)
 import { PurchaseTransactionMethods } from './methods/PurchaseTransactionMethods';
 import { SalesTransactionMethods } from './methods/SalesTransactionMethods';
 import { InventoryTransactionMethods } from './methods/InventoryTransactionMethods';
@@ -11,7 +10,7 @@ import {
   InventoryTransaction,
 } from '../../types/TransactionTypes';
 import { GoogleSheetsResponse } from '../../types/GoogleSheetTypes';
-import GoogleSignInService from '../GoogleSignInService/GoogleSignInService'; // Use centralized service
+import GoogleSignInService from '../GoogleSignInService/GoogleSignInService';
 
 class GoogleSheetsService {
   private purchaseRepository: PurchaseTransactionMethods;

@@ -1,4 +1,3 @@
-// SalesTransactionMethods.ts
 import { GoogleSheetsServiceBaseMethods } from './GoogleSheetsServiceBaseMethods';
 import {
   SalesTransactionFormData,
@@ -57,7 +56,6 @@ export class SalesTransactionMethods extends GoogleSheetsServiceBaseMethods {
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
       const values = await this.getSheetData(spreadsheetId, this.SHEET_NAME);
 
-      // Format: [id, date, productName, sellingPrice, quantity, unit, totalAmount, notes, status]
       let transactions: SalesTransaction[] = values.slice(1).map(
         (row: string[]): SalesTransaction => ({
           id: row[0] || '',

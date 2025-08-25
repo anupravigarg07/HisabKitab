@@ -11,7 +11,7 @@ class GoogleSignInService {
   private tokenPromise: Promise<string> | null = null;
   private lastTokenTime = 0;
   private cachedToken: string | null = null;
-  private readonly TOKEN_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private readonly TOKEN_CACHE_DURATION = 5 * 60 * 1000;
 
   constructor() {
     this.configure();

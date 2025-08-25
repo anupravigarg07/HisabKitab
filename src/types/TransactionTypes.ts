@@ -3,10 +3,10 @@ export interface PurchaseTransaction {
   id: string;
   date: string;
   name: string;
-  amount: number; // number
-  quantity: number; // number
+  amount: number;
+  quantity: number;
   unit: string;
-  totalAmount: number; // number
+  totalAmount: number;
   notes?: string;
   status: string;
 }
@@ -24,10 +24,10 @@ export interface SalesTransaction {
   id: string;
   date: string;
   productName: string;
-  sellingPrice: number; // number
-  quantity: number; // number
+  sellingPrice: number;
+  quantity: number;
   unit: string;
-  totalAmount: number; // number
+  totalAmount: number;
   notes?: string;
   status: string;
 }
@@ -45,13 +45,13 @@ export interface InventoryTransaction {
   id: string;
   date: string; // last updated date for this stock
   productName: string;
-  quantity: number; // number
+  quantity: number;
   unit: string;
-  purchasePrice?: number; // number
-  sellingPrice?: number; // number
-  totalValue?: number; // number
+  purchasePrice?: number;
+  sellingPrice?: number;
+  totalValue?: number;
   notes?: string;
-  status: string; // "active", "archived", "out_of_stock"
+  status: string;
 }
 
 // Inventory Form Data Interface

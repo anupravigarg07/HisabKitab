@@ -22,7 +22,6 @@ type Props = NativeStackScreenProps<
   'ManageInventoryTransactions'
 >;
 
-// Form data (all strings because they come from TextInput)
 type FormData = {
   productName: string;
   purchasePrice: string;
@@ -47,7 +46,6 @@ const ManageInventoryTransactions: React.FC<Props> = ({ route }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ Fetch transactions
   const fetchTransactions = async () => {
     try {
       const data = await GoogleSheetsService.getInventoryTransactions(
@@ -65,7 +63,6 @@ const ManageInventoryTransactions: React.FC<Props> = ({ route }) => {
     fetchTransactions();
   }, []);
 
-  // ✅ Handle input change
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -73,7 +70,6 @@ const ManageInventoryTransactions: React.FC<Props> = ({ route }) => {
     }));
   };
 
-  // ✅ Save new transaction
   const handleSave = async () => {
     const { productName, purchasePrice, sellingPrice, quantity, unit, notes } =
       formData;

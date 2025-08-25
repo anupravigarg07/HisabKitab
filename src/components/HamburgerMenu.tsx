@@ -57,7 +57,6 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
     navigation.navigate(screen, params);
   };
 
-  // Menu items array with working MaterialIcons names
   const menuItems: MenuItem[] = [
     {
       id: 'Home',
