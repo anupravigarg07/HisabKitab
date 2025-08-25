@@ -152,17 +152,12 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
     }
   }
 
-  // Inside InventoryTransactionMethods class
-
-  // 1️⃣ Calculate current inventory
-  // Inside InventoryTransactionMethods class
   async calculateCurrentInventory(
     userEmail: string,
   ): Promise<CalculatedInventoryItem[]> {
     try {
       const spreadsheetId = await this.createOrGetUserSpreadsheet(userEmail);
 
-      // ✅ Use correct sheet names from SHEET_CONFIGS
       const [purchaseValues, salesValues] = await Promise.all([
         this.getSheetData(
           spreadsheetId,
@@ -175,14 +170,11 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
 
       const inventoryMap = new Map<string, CalculatedInventoryItem>();
 
-      // -------------------
-      // Process Purchases
-      // -------------------
       purchaseValues?.slice(1).forEach((row: string[]) => {
         if (row[0] && row[8] === 'Active') {
           const productName = row[2] || '';
           const purchasePrice = Number(row[3]) || 0;
-          const quantity = Number(row[4]) || 0; // ✅ fixed index
+          const quantity = Number(row[4]) || 0;
           const unit = row[5] || '';
           const totalAmount = Number(row[6]) || purchasePrice * quantity;
           const date = row[1] || '';
@@ -224,15 +216,12 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
         }
       });
 
-      // -------------------
-      // Process Sales
-      // -------------------
       salesValues?.slice(1).forEach((row: string[]) => {
         if (row[0] && row[8] === 'Active') {
           const productName = row[2] || '';
-          const sellingPrice = Number(row[3]) || 0; // ✅ fixed index
-          const quantity = Number(row[4]) || 0; // ✅ fixed index
-          const unit = row[5] || ''; // ✅ fixed index
+          const sellingPrice = Number(row[3]) || 0;
+          const quantity = Number(row[4]) || 0;
+          const unit = row[5] || '';
           const totalAmount = Number(row[6]) || sellingPrice * quantity;
           const date = row[1] || '';
 
@@ -298,7 +287,6 @@ export class InventoryTransactionMethods extends GoogleSheetsServiceBaseMethods 
     };
   }
 
-  // 3️⃣ Search inventory
   async searchInventory(userEmail: string, searchTerm: string) {
     const inventory = await this.calculateCurrentInventory(userEmail);
     const term = searchTerm.toLowerCase();

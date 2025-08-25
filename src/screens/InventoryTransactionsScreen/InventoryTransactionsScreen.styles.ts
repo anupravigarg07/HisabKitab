@@ -128,7 +128,6 @@ export const styles = StyleSheet.create({
   },
   loaderText: { fontSize: 16, color: '#666', marginTop: 10, fontWeight: '500' },
 
-  // Modal
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
