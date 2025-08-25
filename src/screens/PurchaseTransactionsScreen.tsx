@@ -21,10 +21,10 @@ import { PurchaseTransaction } from '../types/TransactionTypes';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  'ManagePurchaseTransactions'
+  'PurchaseTransactionsScreen'
 >;
 
-const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
+const PurchaseTransactionsScreen: React.FC<Props> = ({ route }) => {
   const { name, email, photo } = route.params;
 
   if (!email) {
@@ -373,7 +373,7 @@ const ManagePurchaseTransactions: React.FC<Props> = ({ route }) => {
   );
 };
 
-export default ManagePurchaseTransactions;
+export default PurchaseTransactionsScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F8F8' },

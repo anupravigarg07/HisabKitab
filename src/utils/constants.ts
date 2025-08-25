@@ -43,6 +43,16 @@ export const SHEET_CONFIGS: Record<string, SheetConfig> = {
   },
   inventory: {
     name: 'inventory',
-    headers: ['Item', 'Quantity', 'Unit Price', 'Quantity'],
+    headers: [
+      'ID',
+      'Item',
+      'Quantity',
+      'Unit',
+      'Purchase Price',
+      'Selling Price',
+      'Total Value',
+      'Notes',
+      'Status',
+    ],
   },
 };

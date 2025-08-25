@@ -74,7 +74,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       label: 'Purchase',
       iconName: 'shopping-cart',
       action: () =>
-        handleNavigation('ManagePurchaseTransactions', {
+        handleNavigation('PurchaseTransactionsScreen', {
           name: userName,
           email: userEmail,
           photo: userPhoto,
@@ -85,7 +85,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       label: 'Sales',
       iconName: 'trending-up',
       action: () =>
-        handleNavigation('ManageSalesTransactions', {
+        handleNavigation('SalesTransactionsScreen', {
           name: userName,
           email: userEmail,
           photo: userPhoto,
@@ -96,7 +96,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
       label: 'Inventory',
       iconName: 'storage',
       action: () =>
-        handleNavigation('ManageInventoryTransactions', {
+        handleNavigation('InventoryTransactionsScreen', {
           name: userName,
           email: userEmail,
           photo: userPhoto,

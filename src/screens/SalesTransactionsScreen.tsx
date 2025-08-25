@@ -21,10 +21,10 @@ import { SalesTransaction } from '../types/TransactionTypes';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
-  'ManageSalesTransactions'
+  'SalesTransactionsScreen'
 >;
 
-const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
+const SalesTransactionsScreen: React.FC<Props> = ({ route }) => {
   const { name, email, photo } = route.params;
 
   if (!email) {
@@ -373,7 +373,7 @@ const ManageSalesTransactions: React.FC<Props> = ({ route }) => {
   );
 };
 
-export default ManageSalesTransactions;
+export default SalesTransactionsScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F8F8' },

@@ -23,33 +23,21 @@ class GoogleSheetsService {
     this.inventoryRepository = new InventoryTransactionMethods();
   }
 
-  /**
-   * ✅ Use centralized token management from GoogleSignInService
-   * This prevents race conditions and token conflicts
-   */
+  // ----------------- Access Token -----------------
   public async getAccessToken(): Promise<string> {
-    console.log(
-      'GoogleSheetsService: Getting access token via GoogleSignInService...',
-    );
     try {
-      const token = await GoogleSignInService.getAccessToken();
-      console.log('GoogleSheetsService: Token obtained successfully');
-      return token;
+      return await GoogleSignInService.getAccessToken();
     } catch (error) {
-      console.error('GoogleSheetsService: Failed to get access token:', error);
+      console.error('Failed to get access token:', error);
       throw error;
     }
   }
 
-  // ----------------- Purchase Transaction Methods -----------------
+  // ----------------- Purchase Methods -----------------
   async savePurchaseTransaction(
     userEmail: string,
     transactionData: TransactionFormData,
   ): Promise<GoogleSheetsResponse> {
-    console.log(
-      'GoogleSheetsService: Saving purchase transaction for',
-      userEmail,
-    );
     return await this.purchaseRepository.save(userEmail, transactionData);
   }
 
@@ -57,28 +45,7 @@ class GoogleSheetsService {
     userEmail: string,
     includeHistory: boolean = false,
   ): Promise<PurchaseTransaction[]> {
-    console.log(
-      'GoogleSheetsService: Fetching purchase transactions for',
-      userEmail,
-    );
-    console.log('GoogleSheetsService: Include history:', includeHistory);
-
-    try {
-      const result = await this.purchaseRepository.getAll(
-        userEmail,
-        includeHistory,
-      );
-      console.log('GoogleSheetsService: Fetch result:', {
-        type: typeof result,
-        isArray: Array.isArray(result),
-        length: result?.length,
-        firstItem: result?.[0],
-      });
-      return result;
-    } catch (error) {
-      console.error('GoogleSheetsService: Error fetching transactions:', error);
-      throw error;
-    }
+    return await this.purchaseRepository.getAll(userEmail, includeHistory);
   }
 
   async updatePurchaseTransactionById(
@@ -86,12 +53,6 @@ class GoogleSheetsService {
     transactionId: string,
     updatedData: TransactionFormData,
   ): Promise<void> {
-    console.log(
-      'GoogleSheetsService: Updating purchase transaction',
-      transactionId,
-      'for',
-      userEmail,
-    );
     return await this.purchaseRepository.updateById(
       userEmail,
       transactionId,
@@ -103,16 +64,14 @@ class GoogleSheetsService {
     userEmail: string,
     transactionId: string,
   ): Promise<void> {
-    console.log(
-      'GoogleSheetsService: Deleting purchase transaction',
-      transactionId,
-      'for',
-      userEmail,
-    );
     return await this.purchaseRepository.deleteById(userEmail, transactionId);
   }
 
-  // ----------------- Sales Transaction Methods -----------------
+  async clearPurchaseSheet(userEmail: string): Promise<void> {
+    return await this.purchaseRepository.clearAll(userEmail);
+  }
+
+  // ----------------- Sales Methods -----------------
   async saveSalesTransaction(
     userEmail: string,
     transactionData: SalesTransactionFormData,
@@ -129,13 +88,13 @@ class GoogleSheetsService {
 
   async updateSalesTransactionById(
     userEmail: string,
-    id: string,
-    transactionData: Partial<SalesTransaction>,
+    transactionId: string,
+    updatedData: Partial<SalesTransaction>,
   ): Promise<void> {
     return await this.salesRepository.updateById(
       userEmail,
-      id,
-      transactionData,
+      transactionId,
+      updatedData,
     );
   }
 
@@ -146,7 +105,11 @@ class GoogleSheetsService {
     return await this.salesRepository.deleteById(userEmail, transactionId);
   }
 
-  // ----------------- Inventory Transaction Methods -----------------
+  async clearSalesSheet(userEmail: string): Promise<void> {
+    return await this.salesRepository.clearAll(userEmail);
+  }
+
+  // ----------------- Inventory Methods -----------------
   async saveInventoryTransaction(
     userEmail: string,
     sheetName: string,
@@ -162,42 +125,71 @@ class GoogleSheetsService {
   async getInventoryTransactions(
     userEmail: string,
     sheetName: string,
+    includeHistory: boolean = false,
   ): Promise<InventoryTransaction[]> {
-    return await this.inventoryRepository.getAll(userEmail, sheetName);
-  }
-
-  // ----------------- Utility Methods -----------------
-  async clearSheet(
-    userEmail: string,
-    sheetName: string = 'purchase details',
-  ): Promise<void> {
-    switch (sheetName) {
-      case 'purchase details':
-        return await this.purchaseRepository.clearAll(userEmail);
-      case 'sales':
-        return await this.salesRepository.clearAll(userEmail);
-      default:
-        return await this.inventoryRepository.clearAll(userEmail, sheetName);
-    }
-  }
-
-  async createOrGetUserSpreadsheet(userEmail: string): Promise<string> {
-    console.log(
-      'GoogleSheetsService: Creating/getting spreadsheet for',
+    return await this.inventoryRepository.getAll(
       userEmail,
+      sheetName,
+      includeHistory,
     );
+  }
+
+  async updateInventoryTransactionById(
+    userEmail: string,
+    sheetName: string,
+    transactionId: string,
+    updatedData: InventoryFormData,
+  ): Promise<void> {
+    return await this.inventoryRepository.updateById(
+      userEmail,
+      sheetName,
+      transactionId,
+      updatedData,
+    );
+  }
+
+  async deleteInventoryTransactionById(
+    userEmail: string,
+    sheetName: string,
+    transactionId: string,
+  ): Promise<void> {
+    return await this.inventoryRepository.deleteById(
+      userEmail,
+      sheetName,
+      transactionId,
+    );
+  }
+
+  async clearInventorySheet(
+    userEmail: string,
+    sheetName: string,
+  ): Promise<void> {
+    return await this.inventoryRepository.clearAll(userEmail, sheetName);
+  }
+
+  async calculateCurrentInventory(userEmail: string) {
+    return await this.inventoryRepository.calculateCurrentInventory(userEmail);
+  }
+
+  async getInventorySummary(userEmail: string) {
+    return await this.inventoryRepository.getInventorySummary(userEmail);
+  }
+
+  async searchInventory(userEmail: string, searchTerm: string) {
+    return await this.inventoryRepository.searchInventory(
+      userEmail,
+      searchTerm,
+    );
+  }
+
+  // ----------------- Utility -----------------
+  async createOrGetUserSpreadsheet(userEmail: string): Promise<string> {
     try {
-      // Access the private method using bracket notation
-      const result = await this.purchaseRepository[
-        'createOrGetUserSpreadsheet'
-      ](userEmail);
-      console.log('GoogleSheetsService: Spreadsheet operation result:', result);
-      return result;
-    } catch (error) {
-      console.error(
-        'GoogleSheetsService: Spreadsheet operation failed:',
-        error,
+      return await this.purchaseRepository['createOrGetUserSpreadsheet'](
+        userEmail,
       );
+    } catch (error) {
+      console.error('Spreadsheet operation failed:', error);
       throw error;
     }
   }

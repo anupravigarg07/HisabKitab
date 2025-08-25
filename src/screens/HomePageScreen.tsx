@@ -78,21 +78,21 @@ const HomePage: React.FC<Props> = ({ navigation, route }) => {
 
     switch (card.route) {
       case 'Purchase':
-        navigation.navigate('ManagePurchaseTransactions', {
+        navigation.navigate('PurchaseTransactionsScreen', {
           name,
           email,
           photo,
         });
         break;
       case 'Sales':
-        navigation.navigate('ManageSalesTransactions', {
+        navigation.navigate('SalesTransactionsScreen', {
           name,
           email,
           photo,
         });
         break;
       case 'Inventory':
-        navigation.navigate('ManageInventoryTransactions', {
+        navigation.navigate('InventoryTransactionsScreen', {
           name,
           email,
           photo,
